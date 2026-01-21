@@ -1,5 +1,6 @@
 package com.artesanos.sistema_pedidos.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,10 +19,15 @@ import lombok.experimental.FieldDefaults;
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pk_producto")
     Integer id;
-
+    @Column(name = "nombre")
     String nombreProducto;
     Integer precio;
-    public Producto(){}
+    @Column(name = "combinable")
+    boolean combinable;
+
+    public Producto() {
+    }
 
 }
