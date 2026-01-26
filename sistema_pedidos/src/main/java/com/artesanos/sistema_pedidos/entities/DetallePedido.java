@@ -1,0 +1,42 @@
+package com.artesanos.sistema_pedidos.entities;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
+@Entity
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Table(name = "producto_pedido")
+public class DetallePedido {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pk_productoxpedido")
+    Integer id;
+    @Column(name = "precio_momento")
+    Integer precioMomento;
+    @Column(name = "subtotal_pedido")
+    Integer subtotalPedido;
+    @Column(name = "cantidad")
+    Integer cantidadProducto;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_n_pedido")
+    Pedido pedido;
+    @ManyToOne
+    @JoinColumn(name = "fk_id_producto")
+    Producto producto;
+
+    public DetallePedido() {
+    }
+}

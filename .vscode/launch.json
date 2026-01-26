@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "SistemaPedidosApplication",
+            "request": "launch",
+            "mainClass": "com.artesanos.sistema_pedidos.SistemaPedidosApplication",
+            "projectName": "sistema_pedidos",
+            "envFile": "${workspaceFolder}/.env" 
+        }
+    ]
+}
