@@ -5,14 +5,24 @@ import './fila_tomar_pedido.css'
 
 
 const FilaTomarPedido=()=>{
+    const precio=20000
+    
     const [cnt,setcnt]=useState(0);
+    const[valor,setvalor]=useState(0)
 
     const incrementar=()=>{
         setcnt((tmp)=>tmp+1);
+        setvalor(precio*(cnt+1))
     }
+    const cambiar_subtotal=()=>{
+        setvalor(precio*cnt)
+        
+    }
+
 
     const decrementar=()=>{
         setcnt((tmp)=>Math.max(0,tmp-1))
+        setvalor(precio*(cnt-1))
     }
     return(
         <>
@@ -21,7 +31,7 @@ const FilaTomarPedido=()=>{
                 <div className='fila-tomar-pedido-div-dos'>Pizza Espanta Brujas</div>  
                 <div className='fila-tomar-pedido-div-tres' onClick={incrementar}>+</div>  
                 <div className='fila-tomar-pedido-div-cuatro' onClick={decrementar}>-</div>  
-                <div className='fila-tomar-pedido-div-cinco'>$20.000</div>  
+                <div className='fila-tomar-pedido-div-cinco'>${valor}</div>  
             </section>
         </>
     )
