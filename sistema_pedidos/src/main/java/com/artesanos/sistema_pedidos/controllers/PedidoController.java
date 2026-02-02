@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -95,5 +96,21 @@ public class PedidoController {
         return pedidoService.actualizarEstadoPedido(id, estado.toUpperCase()).map(p -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "No existen pedidos para esas fechas", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Pedidos Cancelados obtenidos")
+    })
+    @Operation(summary = "Buscar los pedidos Pagados para el cierre de caja")
+    @GetMapping("/resueltos/cierre/{inicio}/{fin}")
+    @PreAuthorize("hasRole('CAJA')")
+    public ResponseEntity<List<PedidoDto>> getPedidosPorFecha(@PathVariable LocalDate inicio,
+            @PathVariable LocalDate fin) {
+        List<PedidoDto> pedidos = pedidoService.findByFechaPedidoBetweenAndEstadoPedido(inicio, fin);
+        if (pedidos.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(pedidos);
     }
 }
