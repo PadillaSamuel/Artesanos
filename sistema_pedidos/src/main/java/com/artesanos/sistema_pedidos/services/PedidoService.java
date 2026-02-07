@@ -1,5 +1,6 @@
 package com.artesanos.sistema_pedidos.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +16,6 @@ public interface PedidoService {
     public Optional<Pedido> actualizarEstadoPedido(Integer id, String estado);
 
     public Optional<Pedido> actualizarPedido(Integer id, PedidoBodyDto pedidoBodyDto);
+
+    public List<PedidoDto> findByFechaPedidoBetweenAndEstadoPedido(LocalDate inicio, LocalDate fin);
 }

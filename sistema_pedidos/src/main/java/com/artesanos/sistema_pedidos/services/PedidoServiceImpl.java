@@ -136,4 +136,9 @@ public class PedidoServiceImpl implements PedidoService {
         });
     }
 
+    @Override
+    public List<PedidoDto> findByFechaPedidoBetweenAndEstadoPedido(LocalDate inicio, LocalDate fin) {
+        return pedidoRepository.findByFechaPedidoBetweenAndEstadoPedido(inicio, fin, EstadoPedido.RESUELTO);
+    }
+
 }
