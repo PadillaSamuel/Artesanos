@@ -115,3 +115,27 @@ body{
 .tomar-pedido-boton-volver img{
     margin: 0;
 }
+
+
+.selector{
+    position: fixed;
+    height: 60%;
+    max-height: 60%;
+    width: 70%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    border-radius: 10px;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.4);
+    display: grid;
+    place-items: center;
+    overflow: auto;
+}
+
+.resultado{
+    width: 80%;
+    border: solid black 2px;
+}

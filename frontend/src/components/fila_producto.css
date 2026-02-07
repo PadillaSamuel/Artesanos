@@ -3,7 +3,7 @@
     grid-template-columns: 1fr 3fr 3fr 2fr;
     width: 600px;
     border: solid gainsboro 1px;
-    height: 30px;
+    height: auto;
     border-radius: 20px;
     background-color: white;
     
@@ -14,6 +14,9 @@
     border: solid gainsboro 1px;
     display: grid;
     place-items: center;
+    text-align: center;
+    padding-bottom: 2px;
+    padding-top: 2px;
 }
 
 .uno{

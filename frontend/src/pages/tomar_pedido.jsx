@@ -1,11 +1,191 @@
 import './tomar_pedido.css'
 import arrow from '../assets/flecha.png'
 import FilaTomarPedido from '../components/fila_tomar_pedido'
+import { useEffect, useState } from 'react'
+import { apiRequest } from '../services/api'
+import { useParams } from 'react-router-dom'
+import { jwtDecode } from 'jwt-decode'
 
 const TomarPedido = () => {
+
+    const { id, mesa } = useParams();
+    const token = localStorage.getItem("token")
+    const decode = jwtDecode(token);
+    const nombre = decode.sub
+
+    console.log(nombre)
+
+    
+
+    const [visible, setVisible] = useState(false)
+
+    const [digitado, setDigitado] = useState("")
+    const [productos, setProductos] = useState([])
+    const [pedido, setPedido] = useState([])
+    const [total, setTotal] = useState(0)
+    const [mesaPedido, setMesaPedido] = useState(id != undefined ? mesa : 0)
+
+    useEffect(() => {
+        if (!id) return;
+
+        apiRequest(`/api/detallePedido/${id}`, {
+            metodo: "GET"
+        }).then(data => {
+            setPedido(data)
+        })
+
+
+    }, [id])
+
+
+    const actDigitado = (e) => {
+        setDigitado(e.target.value)
+        console.log(e.target.value)
+    }
+
+    const buscarProductos = async () => {
+        return apiRequest(`/api/producto/listar/${digitado}`, {
+            metodo: "GET"
+        })
+    }
+
+    useEffect(() => {
+        const traerProductos = async () => {
+            const tmp = await buscarProductos()
+            setProductos(tmp)
+        }
+        traerProductos()
+
+    }, [digitado])
+
+    const elegirProducto = (producto) => {
+        const existe = pedido.some(p => p.indice === producto.id);
+        if (!existe) {
+            setPedido(pedido => [...pedido, {
+                indice: producto.id,
+                nombreProducto: producto.nombreProducto,
+                cantidadProducto: 1,
+                precioMomento: producto.precio,
+                subtotalPedido: producto.precio * 1
+            }])
+            setVisible(false)
+        }
+
+    }
+
+    const funcionDatosHijo = (cantidad, index, subtotal) => {
+
+        setPedido(tmp => (
+            tmp
+                .map(i =>
+
+                    i.nombreProducto === index ?
+                        { ...i, cantidadProducto: cantidad, subtotalPedido: subtotal }
+                        : i
+
+                )
+
+                .filter(t => t.cantidadProducto > 0)
+        ))
+
+    }
+
+    useEffect(() => {
+
+        const calcularTotal = () => {
+            const suma = pedido.reduce(
+                (acum, p) => acum + p.subtotalPedido,
+                0
+            )
+            setTotal(suma)
+        }
+        calcularTotal()
+    }, [pedido])
+
+
+    const confirmarPedido = async () => {
+        return apiRequest(`/api/pedidos/crear/${nombre}`, {
+            metodo: "POST",
+            body: {
+                numeroMesa: mesaPedido,
+                total: total,
+                productos: pedido.map(p => ({
+                    nombreProducto: p.nombreProducto,
+                    cantidadProducto: p.cantidadProducto,
+                    subtotalPedido: p.subtotalPedido,
+                    precioMomento: p.precioMomento
+                }
+                )
+                )
+            }
+        })
+    }
+
+    const actualizarPedido = async () => {
+        return apiRequest(`/api/pedidos/actualizar/${id}`, {
+            metodo: "PUT",
+            body: {
+                numeroMesa: mesaPedido,
+                productos: pedido.map(p => ({
+                    nombreProducto: p.nombreProducto,
+                    cantidadProducto: p.cantidadProducto,
+                    subtotalPedido: p.subtotalPedido,
+                    precioMomento: p.precioMomento
+                }
+                )
+                )
+            }
+        })
+    }
+
+    const subirPedido = async () => {
+
+
+        if (id != undefined) {
+            await actualizarPedido()
+        } else {
+            await confirmarPedido()
+        }
+    }
+
+    const cambiarMesa=(e)=>{
+        const tmp=e.target.value;
+        setMesaPedido(tmp)
+    }
+
     return (
         <>
             <section className='tomar-pedido-sec'>
+                {
+                    visible && (
+                        <div className='selector'>
+                            <h1>Busqueda</h1>
+                            <form  >
+                                <input onChange={actDigitado} type="text" placeholder='Ingrese un dato de búsqueda' />
+                                <div className='resultados'>
+                                    {productos != null ? (
+                                        productos.map((p, index) => {
+                                            return (
+                                                <div onClick={() => { elegirProducto(p) }} key={p.id} className='resultado'>{p.nombreProducto}</div>
+                                            )
+
+
+                                        })
+                                    ) : (
+                                        <p>No hay</p>
+                                    )
+
+                                    }
+
+                                </div>
+                            </form>
+                            <button onClick={() => {
+                                setVisible(false)
+                            }}>aceptar</button>
+                        </div>
+                    )
+                }
+
                 <div className='main'>
                     <div className='tomar-pedido-div-uno'>
                         <button className='tomar-pedido-boton-volver'>
@@ -14,7 +194,15 @@ const TomarPedido = () => {
                     </div>
                     <div className='tomar-pedido-div-dos'>
                         <label htmlFor="" className='numero-mesa'>Número de mesa</label>
-                        <input type="text" placeholder='Ej: mesa 1' className='input-mesa' />
+                        {
+                            id != undefined ? (
+
+                                <input type="text" className='input-mesa' onChange={cambiarMesa} value={mesaPedido}/>
+                            ) : (
+                                <input type="text" placeholder="Ingrese un número de mesa" className='input-mesa' onChange={cambiarMesa}/>
+                            )
+                        }
+                        
                     </div>
                     <div className='tomar-pedido-div-tres'>
 
@@ -23,28 +211,30 @@ const TomarPedido = () => {
                         </div>
 
                         <div className='items-pedido'>
-                            <FilaTomarPedido/>
-                            <FilaTomarPedido/>
-                            <FilaTomarPedido/>
-                            <FilaTomarPedido/>
-                            <FilaTomarPedido/>
-                            <FilaTomarPedido/>
+
+                            {
+                                pedido.map((p, index) => (
+                                    <FilaTomarPedido key={p.nombreProducto} nombre_producto={p.nombreProducto} funcion={funcionDatosHijo} index={p.nombreProducto} precio={p.precioMomento} cantidad={p.cantidadProducto}/>
+                                ))
+                            }
                         </div>
 
                     </div>
                     <div className='tomar-pedido-div-cuatro'>
-                        <button>Añadir producto</button>
+                        <button onClick={() => {
+                            setVisible(true)
+                        }}>Añadir producto</button>
                     </div>
                 </div>
 
                 <footer className='tomar-pedido-div-cinco'>
                     <div className='div-confirmar-pedido'>
-                        <button className='button-confirmar-pedido'>Confirmar pedido</button>
+                        <button className='button-confirmar-pedido' onClick={subirPedido}>Confirmar pedido</button>
                         <button className='button-anular-pedido'>Anular pedido</button>
                     </div>
 
                     <h3>Total</h3>
-                    <h3>$0</h3>
+                    <h3>${total}</h3>
                 </footer>
             </section>
 

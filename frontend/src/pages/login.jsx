@@ -1,8 +1,10 @@
 import './login.css'
 import loginImg from "../assets/artesanos_logo.jpg"
 import { autenticar } from '../services/autenticacion'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
+     const navigate = useNavigate()
 
     const loguearse=async (e)=>{
         e.preventDefault();
@@ -18,6 +20,14 @@ const Login = () => {
         try {
             const res=await autenticar(body)
             localStorage.setItem("token",res.token)
+            localStorage.setItem("rol",res.rol)
+            if (res.rol==="ROLE_CAJA") {
+                navigate("/caja")
+                console.log(res.rol)
+            }else{
+                navigate("/mesera")
+                console.log(res.rol)
+            }
             console.log("logueadoooooooo")
         } catch (error) {
             alert(error.message)
@@ -27,7 +37,7 @@ const Login = () => {
     return (
         <>
             <section className="sec">
-                <form onSubmit={loguearse}>
+                <form onSubmit={loguearse} className='form-login'>
                     <img src={loginImg} alt="Login" />
                     <h3>Iniciar Sesión</h3>
                     <div className='user-contain'>
@@ -40,7 +50,7 @@ const Login = () => {
 
                     </div>
                     <div className='contain-iniciar'>
-                        <button className='iniciar'>Iniciar</button>
+                        <button className='iniciar' type='submit'>Iniciar</button>
                     </div>
 
                 </form>

@@ -6,3 +6,10 @@ export async function actualizarProductoPorId(id,body){
         body:body
     })
 }
+
+export async function crearProducto(body) {
+    return apiRequest(`/api/producto/crear`,{
+        metodo:'POST',
+        body:body
+    })
+}
