@@ -23,7 +23,6 @@ const Pedidos = () => {
         }
         cargar()
 
-
         const intervalo = setInterval(async () => {
             const tmp = await listarPedidos()
             setPedido(tmp)

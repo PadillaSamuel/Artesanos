@@ -51,17 +51,25 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
+    final String username = getUsernameFromToken(token);
+
+    boolean isUsernameValid = username.equalsIgnoreCase(userDetails.getUsername());
+    boolean isTokenExpired = isTokenExpired(token);
+
+    return (isUsernameValid && !isTokenExpired);
+}
 
     private Claims getAllClaims(String token) {
+        try {
         return Jwts
                 .parser()
-                .setSigningKey(getKey())
+                .verifyWith((javax.crypto.SecretKey) getKey()) 
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
+    } catch (Exception e) {
+        throw e;
+    }
     }
 
     public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {

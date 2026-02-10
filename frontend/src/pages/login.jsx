@@ -1,64 +1,86 @@
-import './login.css'
-import loginImg from "../assets/artesanos_logo.jpg"
-import { autenticar } from '../services/autenticacion'
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'; // Añadido para feedback visual
+import './login.css';
+import loginImg from "../assets/artesanos_logo.jpg";
+import { autenticar } from '../services/autenticacion';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-     const navigate = useNavigate()
+    const navigate = useNavigate();
+    const [cargando, setCargando] = useState(false);
 
-    const loguearse=async (e)=>{
+    const loguearse = async (e) => {
         e.preventDefault();
-        
+        setCargando(true); 
 
-        const data=new FormData(e.target)
-
-        const body={
-            nombreUsuario:data.get("nombreUsuario"),
-            contrasena:data.get("contrasena")
-        }
+        const data = new FormData(e.target);
+        const body = {
+            nombreUsuario: data.get("nombreUsuario"),
+            contrasena: data.get("contrasena")
+        };
 
         try {
-            const res=await autenticar(body)
-            localStorage.setItem("token",res.token)
-            localStorage.setItem("rol",res.rol)
+            const res = await autenticar(body);
             
-            if (res.rol==="ROLE_CAJA") {
-                navigate("/caja")
-                console.log(res.rol)
-            }else{
-                navigate("/mesera")
-                console.log(res.rol)
+            if (!res || !res.token) {
+                throw new Error("No se recibió un token válido.");
             }
-            console.log("logueadoooooooo")
+
+            localStorage.setItem("token", res.token);
+            localStorage.setItem("rol", res.rol || "");
+
+            const destino = res.rol === "ROLE_CAJA" ? "/caja" 
+                          : res.rol === "ROLE_MESERA" ? "/mesera" 
+                          : "/";
+
+            navigate(destino);
+
         } catch (error) {
-            alert(error.message)
+            alert(error.message || "Error al conectar con el servidor");
+        } finally {
+            setCargando(false);
         }
-    }
+    };
 
     return (
-        <>
-            <section className="sec">
-                <form onSubmit={loguearse} className='form-login'>
-                    <img src={loginImg} alt="Login" />
-                    <h3>Iniciar Sesión</h3>
-                    <div className='user-contain'>
-                        <label htmlFor="" className='lbl'>Nombre de usuario</label>
-                        <input type="text" name="nombreUsuario" placeholder="Ingrese su nombre" className='user' />
-                    </div>
-                    <div className='passw-contain'>
-                        <label htmlFor="" className='lbl'>Contraseña</label>
-                        <input type="password" name="contrasena" placeholder='Ingrese su contraseña' className='passw' />
-
-                    </div>
-                    <div className='contain-iniciar'>
-                        <button className='iniciar' type='submit'>Iniciar</button>
-                    </div>
-
-                </form>
+        <section className="sec">
+            <form onSubmit={loguearse} className='form-login'>
+                <img src={loginImg} alt="Login" />
+                <h3>Iniciar Sesión</h3>
                 
-            </section>
-        </>
-    )
-}
+                <div className='user-contain'>
+                    <label className='lbl'>Nombre de usuario</label>
+                    <input 
+                        type="text" 
+                        name="nombreUsuario" 
+                        required 
+                        placeholder="Ingrese su nombre" 
+                        className='user' 
+                    />
+                </div>
+
+                <div className='passw-contain'>
+                    <label className='lbl'>Contraseña</label>
+                    <input 
+                        type="password" 
+                        name="contrasena" 
+                        required 
+                        placeholder='Ingrese su contraseña' 
+                        className='passw' 
+                    />
+                </div>
+
+                <div className='contain-iniciar'>
+                    <button 
+                        className='iniciar' 
+                        type='submit' 
+                        disabled={cargando}
+                    >
+                        {cargando ? "Cargando..." : "Iniciar"}
+                    </button>
+                </div>
+            </form>
+        </section>
+    );
+};
 
 export default Login;

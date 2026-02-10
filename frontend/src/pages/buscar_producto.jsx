@@ -9,7 +9,6 @@ const BuscarProducto = ({ n }) => {
     const [pizzas, setPizzas] = useState([])
     const filtrar = (e) => {
         setDato(e.target.value)
-        console.log(e.target.value)
     }
 
     const filtrarProducto = async () => {
@@ -28,7 +27,6 @@ const BuscarProducto = ({ n }) => {
         }
 
         tmpfunc()
-        
     },
 
         [dato])

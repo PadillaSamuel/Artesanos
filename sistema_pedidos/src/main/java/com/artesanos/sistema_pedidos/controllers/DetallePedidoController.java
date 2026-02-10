@@ -38,7 +38,7 @@ public class DetallePedidoController {
     })
     @Operation(summary = "Obtener detalle de un pedido por id del pedido")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('CAJA','MESERA')")
+    @PreAuthorize("hasAnyAuthority('ROLE_CAJA', 'ROLE_MESERA')")
     public ResponseEntity<List<ProductoDetalleDto>> getDetallesPedido(@PathVariable Integer id) {
         List<ProductoDetalleDto> productoDtos = detallePedidoService.getDetallesPedido(id);
         if (productoDtos.isEmpty()) {

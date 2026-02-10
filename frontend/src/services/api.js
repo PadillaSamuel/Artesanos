@@ -1,68 +1,68 @@
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-
-function getToken(){
-    return localStorage.getItem("token")
+function getToken() {
+  return localStorage.getItem("token");
 }
 
-function crearHeaders(extraHeaders={}){
-    const token=getToken();
-
-    return{
-        "Content-Type":"application/json",
-        ...(token?{Authorization:`Bearer ${token}`}:{}),
-        ...extraHeaders
-    };
+function crearHeaders(extraHeaders = {}) {
+  const token = getToken();
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...extraHeaders,
+  };
 }
 
-export async function apiRequest(path,options={}){
-    const{
-          metodo="GET",
-          body,
-          headers={}      
-    }=options
+export async function apiRequest(path, options = {}) {
+  const { metodo = "GET", body, headers = {} } = options;
 
-    const res= await fetch(path,{
-        method:metodo,
-        headers:crearHeaders(headers),
-        body:body!==undefined? JSON.stringify(body):undefined
+  const url = `${BASE_URL}${path}`;
+
+  try {
+    const res = await fetch(url, {
+      method: metodo, 
+      headers: crearHeaders(headers),
+      body: body !== undefined ? JSON.stringify(body) : undefined,
     });
 
+    if (res.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("rol");
+      window.location.href = "/login";
+    }
 
-    // Si el backend devuelve 401, normalmente significa token inválido o expirado
-if (res.status === 401) {
-  // Opcional: limpiar token
-  localStorage.removeItem("token");
-}
+    if (!res.ok) {
+      const contentType = res.headers.get("content-type") || "";
+      let message = `Error ${res.status}`;
 
-// Manejo de errores: intentamos leer mensaje del backend
-if (!res.ok) {
-  const contentType = res.headers.get("content-type") || "";
+      try {
+        if (contentType.includes("application/json")) {
+          const errorPayload = await res.json();
+          message =
+            errorPayload.message ||
+            errorPayload.error ||
+            errorPayload.mensaje ||
+            message;
+        } else {
+          const errorText = await res.text();
+          message = errorText || message;
+        }
+      } catch (e) {
+      }
 
-  const errorPayload = contentType.includes("application/json")
-    ? await res.json().catch(() => ({}))
-    : await res.text().catch(() => "");
+      throw new Error(message);
+    }
 
-  const message =
-    (typeof errorPayload === "string" && errorPayload) ||
-    errorPayload?.message ||
-    errorPayload?.error ||
-    errorPayload?.mensaje ||
-    `Error ${res.status}`;
+    if (res.status === 204) return null;
 
-  throw new Error(message);
-}
+    const contentType = res.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      return await res.json(); 
+    }
 
-// Si no hay contenido (204 No Content)
-if (res.status === 204) return null;
-
-// Si hay contenido, lo leemos según el tipo
-const contentType = res.headers.get("content-type") || "";
-
-if (contentType.includes("application/json")) {
-  return res.json();
-}
-
-// Por si el backend devuelve texto
-return res.text();
-
+    return await res.text();
+  } catch (error) {
+    console.error("Error en la petición:", error);
+    throw error;
+  }
 }

@@ -41,7 +41,7 @@ public class ProductoController {
     })
     @Operation(summary = "Listar productos")
     @GetMapping("/listar")
-    @PreAuthorize("hasRole('CAJA')")
+    @PreAuthorize("hasAuthority('ROLE_CAJA')")
     public ResponseEntity<List<Producto>> getProductos() {
 
         List<Producto> productos = productoService.listarProductos();
@@ -57,7 +57,7 @@ public class ProductoController {
     })
     @Operation(summary = "Listar productos activos")
     @GetMapping("/listar/activos")
-    @PreAuthorize("hasAnyRole('CAJA','MESERA')")
+    @PreAuthorize("hasAnyAuthority('ROLE_CAJA', 'ROLE_MESERA')")
     public ResponseEntity<List<Producto>> getProductosActivos() {
         List<Producto> productos = productoService.listarProductosActivos();
         if (productos.isEmpty()) {
@@ -72,7 +72,7 @@ public class ProductoController {
     })
     @Operation(summary = "Listar productos por nombre")
     @GetMapping("/listar/{nombre}")
-    @PreAuthorize("hasAnyRole('CAJA','MESERA')")
+    @PreAuthorize("hasAnyAuthority('ROLE_CAJA', 'ROLE_MESERA')")
     public ResponseEntity<List<Producto>> getProductosNombre(@PathVariable String nombre) {
 
         List<Producto> productos = productoService.buscarPorNombreIncompleto(nombre);
@@ -88,7 +88,7 @@ public class ProductoController {
     })
     @Operation(summary = "Crear producto")
     @PostMapping("/crear")
-    @PreAuthorize("hasRole('CAJA')")
+    @PreAuthorize("hasAuthority('ROLE_CAJA')")
     public ResponseEntity<?> postProducto(@RequestBody ProductoDto productoDto) {
         if (productoService.save(productoDto).isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -102,7 +102,8 @@ public class ProductoController {
     })
     @Operation(summary = "Actualizar producto por id")
     @PutMapping("/actualizar/{id}")
-    @PreAuthorize("hasRole('CAJA')")
+    @PreAuthorize("hasAuthority('ROLE_CAJA')")
+
     public ResponseEntity<?> postProducto(@PathVariable Integer id, @RequestBody ProductoDto productoDto) {
         if (productoService.actualizarProducto(id, productoDto).isEmpty()) {
             return ResponseEntity.badRequest().build();

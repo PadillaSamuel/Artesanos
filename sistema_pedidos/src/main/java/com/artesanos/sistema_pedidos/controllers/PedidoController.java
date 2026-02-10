@@ -41,17 +41,14 @@ public class PedidoController {
     }
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "No hay pedidos con estado pendiente", content = @Content),
             @ApiResponse(responseCode = "200", description = "Pedidos con estado pendiente encontrados", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ProductoDto.class))))
     })
     @Operation(summary = "Obtener los pedidos")
     @GetMapping("/listar")
-    @PreAuthorize("hasAnyRole('CAJA','MESERA')")
+    @PreAuthorize("hasAnyAuthority('ROLE_CAJA', 'ROLE_MESERA')")
     public ResponseEntity<List<PedidoDto>> getPedidos() {
         List<PedidoDto> pedidos = pedidoService.listarPedidos();
-        if (pedidos.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+        
         return ResponseEntity.ok().body(pedidos);
     }
 
@@ -61,7 +58,7 @@ public class PedidoController {
     })
     @Operation(summary = "Crear pedidos")
     @PostMapping("/crear/{nombreUsuario}")
-    @PreAuthorize("hasRole('MESERA')")
+    @PreAuthorize("hasAuthority('ROLE_MESERA')")
     public ResponseEntity<?> postPedido(@RequestBody PedidoDto pedidoDto, @PathVariable String nombreUsuario) {
         Optional<Pedido> pedido = pedidoService.save(pedidoDto, nombreUsuario);
         if (pedido.isEmpty()) {
@@ -77,7 +74,7 @@ public class PedidoController {
     })
     @Operation(summary = "Actualizar pedido por id")
     @PutMapping("/actualizar/{id}")
-    @PreAuthorize("hasRole('MESERA')")
+    @PreAuthorize("hasAuthority('ROLE_MESERA')")
     public ResponseEntity<?> putPedido(@PathVariable Integer id, @RequestBody PedidoBodyDto pedidoDto) {
         if (pedidoService.actualizarPedido(id, pedidoDto).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe pedido con ese id");
@@ -91,7 +88,7 @@ public class PedidoController {
     })
     @Operation(summary = "Actualizar estado de pedido por id")
     @PutMapping("/actualizar/{id}/{estado}")
-    @PreAuthorize("hasAnyRole('CAJA','MESERA')")
+    @PreAuthorize("hasAnyAuthority('ROLE_CAJA', 'ROLE_MESERA')")
     public ResponseEntity<?> putEstadoPedido(@PathVariable Integer id, @PathVariable String estado) {
         return pedidoService.actualizarEstadoPedido(id, estado.toUpperCase()).map(p -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
@@ -104,7 +101,7 @@ public class PedidoController {
     })
     @Operation(summary = "Buscar los pedidos Pagados para el cierre de caja")
     @GetMapping("/resueltos/cierre/{inicio}/{fin}")
-    @PreAuthorize("hasRole('CAJA')")
+    @PreAuthorize("hasAuthority('ROLE_CAJA')")
     public ResponseEntity<List<PedidoDto>> getPedidosPorFecha(@PathVariable LocalDate inicio,
             @PathVariable LocalDate fin) {
         List<PedidoDto> pedidos = pedidoService.findByFechaPedidoBetweenAndEstadoPedido(inicio, fin);

@@ -46,10 +46,9 @@ const VerPedido = ({ n_pedido, n_mesa }) => {
             const tmp = await pedidoPorId()
             setCantidad(tmp.length)
             setPedido(tmp)
-            console.log(tmp)
-            const suma = tmp.reduce((cnt, p) => {
-                return cnt + p.subtotalPedido
-            }, 0)
+            const suma=tmp.reduce((cnt,p)=>{
+                return cnt+p.subtotalPedido
+            },0)
             setTotal(suma)
         }
         traerPedido()

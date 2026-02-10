@@ -1,0 +1,41 @@
+services:
+  mysql-db:
+    image: mysql:8.4 
+    container_name: mysql-artesanos
+    restart: always
+    environment:
+      MYSQL_DATABASE: artesanos
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    build: ./sistema_pedidos
+    container_name: backend-api
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/artesanos
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  frontend:
+    build: 
+      context: ./frontend
+      args:
+        - VITE_API_URL=http://192.168.0.50:8080
+    container_name: frontend-pedidos
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      
+volumes:
+  db_data:

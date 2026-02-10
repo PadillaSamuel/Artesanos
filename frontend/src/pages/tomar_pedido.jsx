@@ -41,7 +41,6 @@ const TomarPedido = () => {
 
     const actDigitado = (e) => {
         setDigitado(e.target.value)
-        
     }
 
     const buscarProductos = async () => {
