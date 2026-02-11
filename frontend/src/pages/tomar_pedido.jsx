@@ -68,7 +68,7 @@ const TomarPedido = () => {
     }, [digitado])
 
     const elegirProducto = (producto) => {
-        const existe = pedido.some(p => p.indice === producto.id);
+        const existe = pedido.some(p => p.nombreProducto === producto.nombreProducto);
         if (!existe) {
             setPedido(pedido => [...pedido, {
                 indice: producto.id,
