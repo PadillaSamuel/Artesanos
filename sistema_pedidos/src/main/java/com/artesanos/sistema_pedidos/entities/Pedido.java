@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.artesanos.sistema_pedidos.enums.EstadoPago;
 import com.artesanos.sistema_pedidos.enums.EstadoPedido;
 
 import jakarta.persistence.CascadeType;
@@ -42,6 +43,11 @@ public class Pedido {
     @Enumerated(EnumType.STRING)
     @Column(name = "estado")
     EstadoPedido estadoPedido;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estadoPago")
+    EstadoPago estadoPago;
+    @Column(name = "nombreDomicilio")
+    String nombreCliente;
 
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario")
@@ -56,7 +62,7 @@ public class Pedido {
     public void addDetalle(DetallePedido detalle) {
         detallesPedido.add(detalle);
         detalle.setPedido(this);
-        
+
     }
 
     @Override

@@ -3,8 +3,6 @@ import FilaPedido from '../components/fila_pedido'
 import { useNavigate, useParams } from 'react-router-dom'
 import { apiRequest } from '../services/api';
 import { useEffect, useRef, useState } from 'react';
-import { useReactToPrint } from "react-to-print";
-import Comanda from './comanda';
 import { formateador } from './ver_ventas';
 
 const VerPedido = ({ n_pedido, n_mesa }) => {
@@ -123,9 +121,6 @@ const VerPedido = ({ n_pedido, n_mesa }) => {
 
                 </div>
             </section>
-            <div className='comanda'>
-                    <Comanda ref={comandaRef} pedido={pedido} id={id} mesa={mesa} total={total}/>
-            </div>
         </>
     )
 }

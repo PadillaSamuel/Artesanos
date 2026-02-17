@@ -29,7 +29,8 @@ public class DetallePedido {
     Integer subtotalPedido;
     @Column(name = "cantidad")
     Integer cantidadProducto;
-
+    @Column(name = "peticionCliente", columnDefinition = "VARCHAR(300)")
+    String peticionCliente;
     @ManyToOne
     @JoinColumn(name = "fk_n_pedido")
     Pedido pedido;

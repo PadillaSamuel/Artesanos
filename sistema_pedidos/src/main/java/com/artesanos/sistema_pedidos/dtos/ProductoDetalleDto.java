@@ -11,11 +11,14 @@ public class ProductoDetalleDto {
     Integer cantidadProducto;
     Integer subtotalPedido;
     Integer precioMomento;
+    String peticionCliente;
 
-    public ProductoDetalleDto(String nombre, Integer cantidad, Integer precio, Integer subtotal) {
+    public ProductoDetalleDto(String nombre, Integer cantidad, Integer precio, Integer subtotal,
+            String peticionCliente) {
         this.nombreProducto = nombre;
         this.cantidadProducto = cantidad;
         this.precioMomento = precio;
         this.subtotalPedido = subtotal;
+        this.peticionCliente = peticionCliente;
     }
 }

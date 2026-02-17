@@ -9,9 +9,43 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FacturaDto {
-    Integer id;
-    Integer total;
+    Integer idPedido;
+    String impresoraIp;
     LocalDate fechaFactura;
+    String numeroMesa;
+    String nombreDomicilio;
     List<ProductoDetalleDto> productos;
+    Integer total;
 
 }
+
+// {
+//     "idPedido": 101,
+//     "impresoraIp": "192.168.0.100",
+//     "fechaFactura": "2026-02-17",
+//     "numeroMesa": "1",
+//     "nombreDomicilio": "",
+//     "productos": [
+//         {
+//             "nombreProducto": "pizza albahaca a la vaca + espanta brujas ",
+//             "cantidadProducto": 1,
+//             "subtotalPedido": 21900
+//         },
+//         {
+//             "nombreProducto": "pizza albahaca a la vaca + campesina",
+//             "cantidadProducto": 2,
+//             "subtotalPedido": 21900
+//         }, 
+//         {
+//             "nombreProducto": "adicion queso",
+//             "cantidadProducto": 1,
+//             "subtotalPedido": 4000
+//         },
+//         {
+//             "nombreProducto": "pizza meditando",
+//             "cantidadProducto": 1,
+//             "subtotalPedido": 35000
+//         }
+//     ],
+//     "total": 30000
+// }

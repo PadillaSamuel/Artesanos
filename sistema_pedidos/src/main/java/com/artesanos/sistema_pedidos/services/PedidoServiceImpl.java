@@ -67,6 +67,7 @@ public class PedidoServiceImpl implements PedidoService {
             detallePedido.setPedido(pedido);
             detallePedido.setPrecioMomento(prodOptional.getPrecio());
             detallePedido.setSubtotalPedido(subtotal);
+            detallePedido.setPeticionCliente(i.getPeticionCliente());
 
             total += subtotal;
 
@@ -127,7 +128,7 @@ public class PedidoServiceImpl implements PedidoService {
                 detallePedido.setCantidadProducto(i.getCantidadProducto());
                 detallePedido.setPrecioMomento(prod.getPrecio());
                 detallePedido.setSubtotalPedido(subtotal);
-
+                detallePedido.setPeticionCliente(i.getPeticionCliente());
                 totalAcumulado += subtotal;
                 pedido.getDetallesPedido().add(detallePedido);
             }
