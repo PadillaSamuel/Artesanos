@@ -2,6 +2,8 @@ package com.artesanos.sistema_pedidos.dtos;
 
 import java.util.List;
 
+import com.artesanos.sistema_pedidos.enums.EstadoPago;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +14,8 @@ import lombok.Setter;
 public class PedidoBodyDto {
     Integer numeroMesa;
     List<ProductoDetalleDto> productos;
+    String nombreDomicilio;
+    EstadoPago estadoPago;
 
     public PedidoBodyDto(Integer numeroMesa, List<ProductoDetalleDto> productoDtos) {
         this.numeroMesa = numeroMesa;

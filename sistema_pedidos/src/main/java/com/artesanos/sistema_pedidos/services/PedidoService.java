@@ -13,7 +13,7 @@ public interface PedidoService {
 
     public Optional<Pedido> save(PedidoDto pedido, String usuarioNombre);
 
-    public Optional<Pedido> actualizarEstadoPedido(Integer id, String estado);
+    public Optional<Pedido> actualizarEstadoPedido(Integer id, String estado, String estadoPago);
 
     public Optional<Pedido> actualizarPedido(Integer id, PedidoBodyDto pedidoBodyDto);
 

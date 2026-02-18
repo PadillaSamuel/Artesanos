@@ -72,6 +72,17 @@ public class PedidoController {
     }
 
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Domicilio creado")
+    })
+    @Operation(summary = "Crear pedidos")
+    @PostMapping("/crear/domicilio/{nombreUsuario}")
+    @PreAuthorize("hasAnyAuthority('ROLE_CAJA', 'ROLE_MESERA')")
+    public ResponseEntity<?> postPedidoDomicilio(@RequestBody PedidoDto pedidoDto, @PathVariable String nombreUsuario) {
+        pedidoService.save(pedidoDto, nombreUsuario);
+        return ResponseEntity.ok().build();
+    }
+
+    @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Intentar actualizar pedido con id no existente", content = @Content),
             @ApiResponse(responseCode = "200", description = "Pedido actualizado")
     })
@@ -89,11 +100,13 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Intentar actualizar pedido con id no existente", content = @Content),
             @ApiResponse(responseCode = "200", description = "Estado de pedido actualizado")
     })
-    @Operation(summary = "Actualizar estado de pedido por id")
-    @PutMapping("/actualizar/{id}/{estado}")
+    @Operation(summary = "Actualizar estado y metodo de pago de pedido por id")
+    @PutMapping("/actualizar/{id}/{estado}/{metodoPago}")
     @PreAuthorize("hasAnyAuthority('ROLE_CAJA', 'ROLE_MESERA')")
-    public ResponseEntity<?> putEstadoPedido(@PathVariable Integer id, @PathVariable String estado) {
-        return pedidoService.actualizarEstadoPedido(id, estado.toUpperCase()).map(p -> ResponseEntity.ok().build())
+    public ResponseEntity<?> putEstadoPedido(@PathVariable Integer id, @PathVariable String estado,
+            @PathVariable String metodoPago) {
+        return pedidoService.actualizarEstadoPedido(id, estado.toUpperCase(), metodoPago.toUpperCase())
+                .map(p -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 
     }

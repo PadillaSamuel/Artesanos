@@ -16,6 +16,7 @@ import com.artesanos.sistema_pedidos.entities.DetallePedido;
 import com.artesanos.sistema_pedidos.entities.Pedido;
 import com.artesanos.sistema_pedidos.entities.Producto;
 import com.artesanos.sistema_pedidos.entities.Usuario;
+import com.artesanos.sistema_pedidos.enums.EstadoPago;
 import com.artesanos.sistema_pedidos.enums.EstadoPedido;
 import com.artesanos.sistema_pedidos.repositories.PedidoRepository;
 import com.artesanos.sistema_pedidos.repositories.ProductoRepository;
@@ -46,7 +47,8 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     @Transactional
     public Optional<Pedido> save(PedidoDto pedidoDto, String usuarioNombre) {
-        if (pedidoRepository.findPedidoPendienteByMesa(pedidoDto.getNumeroMesa()).size() > 0) {
+        if (pedidoRepository.findPedidoPendienteByMesa(pedidoDto.getNumeroMesa()).size() > 0
+                && pedidoDto.getNombreDomicilio() == null) {
             return Optional.empty();
         }
         Pedido pedido = new Pedido();
@@ -82,6 +84,8 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setEstadoPedido(EstadoPedido.PENDIENTE);
         pedido.setDetallesPedido(detallePedidos);
         pedido.setTotalPedido(total);
+        pedido.setNombreDomicilio(pedidoDto.getNombreDomicilio());
+        pedido.setEstadoPago(EstadoPago.NO_PAGO);
 
         return Optional.of(pedidoRepository.save(pedido));
 
@@ -90,9 +94,10 @@ public class PedidoServiceImpl implements PedidoService {
     @Transactional
     @SuppressWarnings("null")
     @Override
-    public Optional<Pedido> actualizarEstadoPedido(Integer id, String estado) {
+    public Optional<Pedido> actualizarEstadoPedido(Integer id, String estado, String estadoPago) {
         return pedidoRepository.findById(id).map(pedido -> {
             pedido.setEstadoPedido(EstadoPedido.fromString(estado));
+            pedido.setEstadoPago(EstadoPago.fromString(estadoPago));
             return pedidoRepository.save(pedido);
         });
     }
@@ -105,6 +110,9 @@ public class PedidoServiceImpl implements PedidoService {
 
             if (pedidoBodyDto.getNumeroMesa() != null) {
                 pedido.setNumeroMesa(pedidoBodyDto.getNumeroMesa());
+            }
+            if (pedidoBodyDto.getNombreDomicilio() != null) {
+                pedido.setNombreDomicilio(pedidoBodyDto.getNombreDomicilio());
             }
 
             if (pedidoBodyDto.getProductos() == null) {

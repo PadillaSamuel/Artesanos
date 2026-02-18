@@ -1,7 +1,7 @@
 package com.artesanos.sistema_pedidos.enums;
 
 public enum EstadoPago {
-    PENDIENTE, EFECTIVO, TRANSFERENCIA;
+    NO_PAGO, EFECTIVO, TRANSFERENCIA, DATAFONO;
 
     public static EstadoPago fromString(String estado) {
         for (EstadoPago e : EstadoPago.values()) {
@@ -10,6 +10,6 @@ public enum EstadoPago {
             }
         }
 
-        return PENDIENTE;
+        return NO_PAGO;
     }
 }

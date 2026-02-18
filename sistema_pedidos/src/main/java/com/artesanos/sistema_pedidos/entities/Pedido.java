@@ -47,7 +47,7 @@ public class Pedido {
     @Column(name = "estadoPago")
     EstadoPago estadoPago;
     @Column(name = "nombreDomicilio")
-    String nombreCliente;
+    String nombreDomicilio;
 
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario")
