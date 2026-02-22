@@ -1,17 +1,10 @@
 package com.artesanos.sistema_pedidos.controllers;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +15,7 @@ import com.artesanos.sistema_pedidos.dtos.FacturaDto;
 import com.artesanos.sistema_pedidos.services.NetworkPrinterService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,26 +29,6 @@ public class ImpresoraController {
     public ImpresoraController(
             NetworkPrinterService networkPrinterService) {
         this.networkPrinterService = networkPrinterService;
-    }
-
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "No hay impresoras en la red", content = @Content),
-            @ApiResponse(responseCode = "200", description = "Listado de impresoras encontradas", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = List.class))))
-    })
-    @Operation(summary = "Obtener listado de impresoras")
-    @PreAuthorize("hasAnyAuthority('ROLE_CAJA', 'ROLE_MESERA')")
-    @GetMapping("/printers")
-    public ResponseEntity<List<String>> listPrinters() {
-        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
-
-        List<String> impresoras = Arrays.stream(printServices)
-                .map(PrintService::getName)
-                .collect(Collectors.toList());
-        if (impresoras.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(impresoras);
     }
 
     @ApiResponses(value = {
