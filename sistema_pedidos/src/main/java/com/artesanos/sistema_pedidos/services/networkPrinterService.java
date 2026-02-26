@@ -31,7 +31,7 @@ public class NetworkPrinterService {
     private final Style boldCenter = new Style().setBold(true).setFontSize(Style.FontSize._1, Style.FontSize._1)
             .setJustification(EscPosConst.Justification.Center);
     private final Style boldLeft = new Style().setBold(true);
-    private final Style boldCenterBig = new Style().setFontSize(Style.FontSize._2, Style.FontSize._2).setBold(true)
+    private final Style boldCenterBig = new Style().setFontSize(Style.FontSize._1, Style.FontSize._2).setBold(true)
             .setJustification(EscPosConst.Justification.Center);
     private final Style normal = new Style().setFontSize(Style.FontSize._1, Style.FontSize._1);
 
@@ -164,8 +164,11 @@ public class NetworkPrinterService {
         if (data.get("mesa") != null)
             escpos.writeLF(boldCenterBig, "Mesa: " + data.get("mesa"));
         if (data.get("nombreDomicilio") != null && !data.get("nombreDomicilio").toString().isBlank()) {
+            escpos.writeLF(boldCenter, "Teléfono: "+  data.get("numeroCliente"));
+            escpos.write("");
             escpos.writeLF(boldCenterBig, "Domicilio: " + data.get("nombreDomicilio"));
         }
+        
         escpos.writeLF("------------------------------------------------");
     }
 

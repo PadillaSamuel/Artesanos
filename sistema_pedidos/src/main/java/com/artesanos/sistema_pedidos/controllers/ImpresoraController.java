@@ -54,6 +54,9 @@ public class ImpresoraController {
             data.put("fecha", payload.getFechaFactura());
             data.put("pedido", payload.getProductos());
             data.put("total", payload.getTotal());
+            String numeroCliente = payload.getNumeroCliente();
+            data.put("numeroCliente", (numeroCliente == null || numeroCliente.isBlank()) ? null : numeroCliente);
+
             networkPrinterService.imprimirFactura(data, printerIp);
 
             return ResponseEntity.ok("Impresión enviada exitosamente a: " + printerIp);
