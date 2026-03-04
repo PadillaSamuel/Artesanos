@@ -9,13 +9,13 @@ import { formateador } from './ver_ventas'
 import { toast } from 'react-toastify';
 const TomarPedido = () => {
 
-    const { id, mesa } = useParams();
+    const { id, mesa, domi } = useParams();
     const token = localStorage.getItem("token")
     const decode = jwtDecode(token);
     const nombre = decode.sub
     const navigate = useNavigate()
 
-    
+
 
 
 
@@ -25,7 +25,9 @@ const TomarPedido = () => {
     const [productos, setProductos] = useState([])
     const [pedido, setPedido] = useState([])
     const [total, setTotal] = useState(0)
-    const [mesaPedido, setMesaPedido] = useState(id != undefined ? mesa : 0)
+    const [mesaPedido, setMesaPedido] = useState(id != undefined ? (mesa === 0 ? undefined : mesa) : null)
+    const [nombreDomicilio, setNombreDomicilio] = useState(id != undefined ? domi : null)
+
 
     useEffect(() => {
         if (!id) return;
@@ -34,6 +36,7 @@ const TomarPedido = () => {
             metodo: "GET"
         }).then(data => {
             setPedido(data)
+            console.log(data)
         })
 
 
@@ -51,7 +54,7 @@ const TomarPedido = () => {
     }
 
     const anularPedido = async () => {
-        return apiRequest(`/api/pedidos/actualizar/${id}/CANCELADO`, {
+        return apiRequest(`/api/pedidos/actualizar/${id}/CANCELADO/NO_PAGO`, {
             metodo: "PUT"
         })
     }
@@ -76,7 +79,8 @@ const TomarPedido = () => {
                 nombreProducto: producto.nombreProducto,
                 cantidadProducto: 1,
                 precioMomento: producto.precio,
-                subtotalPedido: producto.precio * 1
+                subtotalPedido: producto.precio * 1,
+                peticionCliente: ""
             }])
             setVisible(false)
         }
@@ -114,82 +118,133 @@ const TomarPedido = () => {
 
 
     const confirmarPedido = async () => {
+        console.log(mesaPedido)
+        console.log(mesaPedido)
+        console.log(domi)
+        console.log(nombreDomicilio)
+        console.log(mesaPedido)
+
         return apiRequest(`/api/pedidos/crear/${nombre}`, {
             metodo: "POST",
-            body: {
-                numeroMesa: mesaPedido,
-                total: total,
-                productos: pedido.map(p => ({
-                    nombreProducto: p.nombreProducto,
-                    cantidadProducto: p.cantidadProducto,
-                    subtotalPedido: p.subtotalPedido,
-                    precioMomento: p.precioMomento
+            body:
+                mesaPedido != null ? {
+                    numeroMesa: mesaPedido,
+                    total: total,
+                    productos: pedido.map(p => ({
+                        nombreProducto: p.nombreProducto,
+                        cantidadProducto: p.cantidadProducto,
+                        subtotalPedido: p.subtotalPedido,
+                        precioMomento: p.precioMomento,
+                        peticionCliente: p.peticionCliente
+                    }))
+                } : {
+                    numeroMesa: 0,
+                    total: total,
+                    productos: pedido.map(p => ({
+                        nombreProducto: p.nombreProducto,
+                        cantidadProducto: p.cantidadProducto,
+                        subtotalPedido: p.subtotalPedido,
+                        precioMomento: p.precioMomento,
+                        peticionCliente: p.peticionCliente
+                    })),
+                    nombreDomicilio: nombreDomicilio,
                 }
-                )
-                )
-            }
+
         })
     }
 
     const actualizarPedido = async () => {
         return apiRequest(`/api/pedidos/actualizar/${id}`, {
             metodo: "PUT",
-            body: {
-                numeroMesa: mesaPedido,
-                productos: pedido.map(p => ({
-                    nombreProducto: p.nombreProducto,
-                    cantidadProducto: p.cantidadProducto,
-                    subtotalPedido: p.subtotalPedido,
-                    precioMomento: p.precioMomento
+            body:
+                mesaPedido != undefined ? {
+                    numeroMesa: mesaPedido,
+                    productos: pedido.map(p => ({
+                        nombreProducto: p.nombreProducto,
+                        cantidadProducto: p.cantidadProducto,
+                        subtotalPedido: p.subtotalPedido,
+                        precioMomento: p.precioMomento,
+                        peticionCliente: p.peticionCliente
+                    }
+                    )
+                    )
+                } : {
+                    numeroMesa: null,
+                    productos: pedido.map(p => ({
+                        nombreProducto: p.nombreProducto,
+                        cantidadProducto: p.cantidadProducto,
+                        subtotalPedido: p.subtotalPedido,
+                        precioMomento: p.precioMomento,
+                        peticionCliente: p.peticionCliente
+                    }
+                    )
+                    ),
+                    nombreDomicilio: nombreDomicilio,
+                    estadoPago: "NO_PAGO"
                 }
-                )
-                )
-            }
+
+
         })
     }
 
     const subirPedido = async () => {
-        if (pedido.length!=0) {            
+        if (pedido.length != 0) {
             if (id != undefined) {
-            await actualizarPedido()
-                navigate("/mesera");    
+                await actualizarPedido()
+                //navigate("/mesera");
                 toast.success("¡Pedido actualizado con éxito!");
-        } else {
-            try {
-                await confirmarPedido()
-                navigate("/mesera");    
-                toast.success("¡Pedido confirmado con éxito!");
-            } catch (error) {
-                toast.error(`${error.message }`);
+            } else {
+                try {
+                    await confirmarPedido()
+                    //  navigate("/mesera");
+                    toast.success("¡Pedido confirmado con éxito!");
+                } catch (error) {
+                    toast.error(`${error.message}`);
+                }
             }
         }
-        }
 
-        
+
     }
 
     const cambiarMesa = (e) => {
         const valorOriginal = e.target.value;
-    
-    if (valorOriginal.trim() === '' || isNaN(valorOriginal)) {
-        setMesaPedido(0);
-        toast.error("¡Número de mesa inválido!", { toastId: "error-mesa" });
-        return;
+
+        if (valorOriginal.trim() === '' || isNaN(valorOriginal)) {
+            setMesaPedido(0);
+            toast.error("¡Número de mesa inválido!", { toastId: "error-mesa" });
+            return;
+        }
+
+        const numMesa = parseInt(valorOriginal, 10);
+
+        if (numMesa <= 0 || numMesa > 100) {
+            setMesaPedido(0);
+            toast.error("Rango de mesa inválido (1-100)", { toastId: "error-mesa" });
+            return;
+        }
+        setMesaPedido(numMesa);
     }
 
-    const numMesa = parseInt(valorOriginal, 10);
-
-    if (numMesa <= 0 || numMesa > 100) {
-        setMesaPedido(0);
-        toast.error("Rango de mesa inválido (1-100)", { toastId: "error-mesa" });
-        return;
-    }
-    setMesaPedido(numMesa);
+    const cambiarDomi = (e) => {
+        const nameDomi = e.target.value;
+        setNombreDomicilio(nameDomi);
     }
 
     const cancelarPedido = async () => {
         const tmp = await anularPedido();
         navigate("/mesera");
+    }
+
+    const añadirDetalle = (nombre, peticion) => {
+        setPedido(pedido => pedido.map(
+            i => i.nombreProducto === nombre ?
+                {
+                    ...i, peticionCliente: peticion
+                } : i
+
+        ))
+        console.log(peticion)
     }
 
     return (
@@ -220,32 +275,71 @@ const TomarPedido = () => {
                             </form>
                             <button onClick={() => {
                                 setVisible(false)
-                            }} className='boton-busqueda'>Aceptar</button>
+                            }} className='boton-busqueda'>Cancelar</button>
                         </div>
                     )
                 }
 
                 <div className='main'>
                     <div className='tomar-pedido-div-uno'>
-                        <button className='tomar-pedido-boton-volver' onClick={() => navigate("/mesera")}>
+                        <button className='tomar-pedido-boton-volver' onClick={() => {
+                            if (id != undefined && domi != undefined) {
+                                navigate(`/pedidos/${true}`)
+                            } else {
+                                if (domi != undefined) {
+                                    navigate("/gestionar-domis")
+                                } else {
+                                    navigate("/mesera")
+                                }
+
+                            }
+
+                        }}>
                             <img src={arrow} alt="" />
                         </button>
                     </div>
                     <div className='tomar-pedido-div-dos'>
-                        <label htmlFor="" className='numero-mesa'>Número de mesa</label>
+
                         {
                             id != undefined ? (
+                                mesaPedido != undefined ? (
+                                    <>
+                                        <label htmlFor="" className='numero-mesa'>Número de mesa</label>
+                                        <input type="text" className='input-mesa' onChange={cambiarMesa} value={mesaPedido} />
+                                    </>
 
-                                <input type="text" className='input-mesa' onChange={cambiarMesa} value={mesaPedido} />
+                                ) : (
+                                    <>
+                                        <label htmlFor="" className='numero-mesa'>Nombre cliente</label>
+                                        <input type="text" className='input-mesa' onChange={cambiarDomi} value={nombreDomicilio} />
+                                    </>
+
+                                )
+
+
+
                             ) : (
-                                <input type="text" placeholder="Ingrese un número de mesa" className='input-mesa' onChange={cambiarMesa} />
+                                domi != undefined ? (
+                                    <>
+                                        <label htmlFor="" className='numero-mesa'>Nombre cliente</label>
+                                        <input type="text" placeholder="Ingrese el nombre del cliente" className='input-mesa' onChange={cambiarDomi} />
+                                    </>
+
+                                ) : (
+                                    <>
+                                        <label htmlFor="" className='numero-mesa'>Número de mesa</label>
+                                        <input type="text" placeholder="Ingrese un número de mesa" className='input-mesa' onChange={cambiarMesa} />
+                                    </>
+
+                                )
+
                             )
                         }
 
                     </div>
                     <div className='tomar-pedido-div-tres'>
 
-                        <div>
+                        <div className='title-pedido-div-tres'>
                             <h3>Pedido</h3>
                         </div>
 
@@ -253,7 +347,7 @@ const TomarPedido = () => {
 
                             {
                                 pedido.map((p, index) => (
-                                    <FilaTomarPedido key={p.nombreProducto} nombre_producto={p.nombreProducto.charAt(0).toUpperCase() + p.nombreProducto.slice(1)} funcion={funcionDatosHijo} index={p.nombreProducto} precio={p.precioMomento} cantidad={p.cantidadProducto} />
+                                    <FilaTomarPedido key={p.nombreProducto} nombre_producto={p.nombreProducto.charAt(0).toUpperCase() + p.nombreProducto.slice(1)} funcion={funcionDatosHijo} index={p.nombreProducto} precio={p.precioMomento} cantidad={p.cantidadProducto} addDetalle={añadirDetalle} detalle={p.peticionCliente} />
                                 ))
                             }
                         </div>
@@ -271,19 +365,19 @@ const TomarPedido = () => {
 
                         {id != undefined ? (
                             <>
-                                <button className='button-confirmar-pedido' disabled={pedido.length === 0 || mesaPedido ==0} onClick={subirPedido}>Confirmar pedido</button>
+                                <button className='button-confirmar-pedido' disabled={pedido.length === 0 || mesaPedido == 0} onClick={subirPedido}>Confirmar pedido</button>
                                 <button className='button-anular-pedido' onClick={cancelarPedido}>Anular pedido</button>
                             </>
 
                         ) : (
-                            <button className='button-confirmar-pedido' disabled={pedido.length === 0 || mesaPedido ==0} onClick={subirPedido}>Confirmar pedido</button>
+                            <button className='button-confirmar-pedido' disabled={pedido.length === 0 || mesaPedido == 0} onClick={subirPedido}>Confirmar pedido</button>
                         )
 
                         }
 
                     </div>
 
-                    <h3>Total</h3>
+                    <h3 className='tomar-pedido-text-total'>Total</h3>
                     <h3>{formateador.format(total)}</h3>
                 </footer>
             </section>

@@ -3,6 +3,7 @@ import Boton from '../components/boton_gestion'
 import ventas from '../assets/ventas.png'
 import pizza from '../assets/pizza.png'
 import impresora from '../assets/impresora.png'
+import domis from '../assets/domis.png'
 
 
 const HomeCaja = () => {
@@ -12,7 +13,7 @@ const HomeCaja = () => {
             <Boton imagen={ventas} className="boton" nombre="Buscar ventas" ruta="/ver-ventas"/>   
             <Boton imagen={pizza} className="boton" nombre="Gestionar productos" ruta="/gestion-productos"/>   
             <Boton imagen={impresora} className="boton" nombre="Pedidos" ruta="/pedidos"/>      
-            <Boton imagen={impresora} className="boton" nombre="Pedidos" ruta="/pedidos"/>      
+            <Boton imagen={domis} className="boton" nombre="Domicilios" ruta="/gestionar-domis"/>      
         </section>
     )
 }

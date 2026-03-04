@@ -12,6 +12,7 @@ import TomarPedido from "./pages/tomar_pedido";
 import GestionProductos from "./pages/gestion_productos";
 import CrearProducto from "./pages/crear_producto";
 import VerVentas from "./pages/ver_ventas";
+import GestionDomis from "./pages/gestionar_domis";
 import { ToastContainer } from 'react-toastify';
 function App() {
   return (
@@ -33,6 +34,12 @@ function App() {
         />
         <Route path="/ver-ventas" element={<VerVentas />} />
         <Route path="/ver-pedido/:id/:mesa/:estado" element={<VerPedido />} />
+        <Route path="/tomar-pedido/:domi" element={<TomarPedido />} />
+        <Route path="/tomar-pedido/domi/:id/:domi" element={<TomarPedido />} />
+        <Route path="/gestionar-domis" element={<GestionDomis />} />
+        <Route path="/tomar-pedido/domi/:id/:domi" element={<TomarPedido />} />
+        <Route path="/ver-pedido/domi/:id/:domi" element={<VerPedido />} />
+        <Route path="/pedidos/:domis" element={<Pedidos />} />
       </Routes>
 
       <ToastContainer position="bottom-right" autoClose={2500} />

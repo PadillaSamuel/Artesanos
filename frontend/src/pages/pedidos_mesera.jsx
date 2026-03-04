@@ -25,7 +25,7 @@ const PedidoMesera = () => {
         const intervalo = setInterval(async () => {
             const res = await traerPedidos()
             setPedidos(res)
-        },10000);
+        }, 10000);
 
         return () => clearInterval(intervalo)
     }, [])
@@ -35,7 +35,7 @@ const PedidoMesera = () => {
         <>
             <section className='pedido-mesera-sec'>
                 <div className='pedido-mesera-head'>
-                    <button className='boton-arrow' onClick={()=>navigate("/")}>
+                    <button className='boton-arrow' onClick={() => navigate("/")}>
                         <img src={volver} alt="" />
                     </button>
                     <button className='boton-nuevo-pedido' onClick={() => {
@@ -43,23 +43,35 @@ const PedidoMesera = () => {
                     }}>
                         + Nuevo pedido
                     </button>
+
+                    <button className='boton-nuevo-pedido' onClick={() => {
+                        navigate(`/tomar-pedido/${true}`)
+                    }}>
+                        + Nuevo Domi
+                    </button>
                 </div>
+
 
                 <div className='pedido-mesera-pedidos'>
                     <h3 className='title-pedido'>Pedidos</h3>
                     <div>
-                        {pedidos!=null?(
+                        {pedidos != null ? (
                             pedidos.map(p => (
-                            <BotonPedido key={p.id} num_mesa={p.numeroMesa} num_pedido={p.id} ruta={`/tomar-pedido/${p.id}/${p.numeroMesa}`} />
-                        ))
-                        ):(
+                                p.numeroMesa === 0 ? (
+                                    <BotonPedido key={p.id} num_mesa={p.nombreDomicilio} num_pedido={p.id} ruta={`/tomar-pedido/domi/${p.id}/${p.nombreDomicilio}`} />
+                                ) : (
+                                    <BotonPedido key={p.id} num_mesa={p.numeroMesa} num_pedido={p.id} ruta={`/tomar-pedido/${p.id}/${p.numeroMesa}`} />
+                                )
+
+                            ))
+                        ) : (
                             <p>No hay pedidos en curso</p>
                         )
-                        
-                    }
-    
+
+                        }
+
                     </div>
-                    
+
                 </div>
             </section>
         </>

@@ -13,6 +13,8 @@ export const formateador = new Intl.NumberFormat("es-CO", {
 const VerVentas = () => {
   const [pedidos, setPedidos] = useState([]);
   const [total, setTotal] = useState(0);
+  const [totalQr, setTotalQr] = useState(0)
+  const [totalCaja, setTotalCaja] = useState(0)
   const navigate = useNavigate();
 
   const traerVentas = async (inicio, fin) => {
@@ -63,8 +65,22 @@ const VerVentas = () => {
         return cnt + p.total;
       }, 0);
     };
+    const acumularQr = () => {
+      return pedidos.reduce((cnt, p) => {
+        if (p.estadoPago === "TRANSFERENCIA") {
+          return cnt + p.total
+        }
+        return cnt
+      }, 0)
+    }
     const suma = acumular();
+    const qr=acumularQr();
+    const caja=suma-qr;
+
+    console.log(qr)
     setTotal(suma);
+    setTotalCaja(caja);
+    setTotalQr(qr);
   }, [pedidos]);
 
   return (
@@ -104,7 +120,8 @@ const VerVentas = () => {
             <button type="submit" className="boton-buscar">
               Buscar
             </button>
-            <h2 className="total-cierre">Total {formateador.format(total)}</h2>
+            <h2 className="total-caja">Caja {formateador.format(totalCaja)}</h2>
+            <h2 className="total-caja">QR {formateador.format(totalQr)}</h2>
           </div>
         </form>
       </section>

@@ -10,7 +10,7 @@ import { useReactToPrint } from "react-to-print";
 const VerPedido = ({ n_pedido, n_mesa }) => {
     const [pedido, setPedido] = useState([])
     const [cantidad, setCantidad] = useState(0)
-    const { id, mesa, estado } = useParams();
+    const { id, mesa, estado,domi } = useParams();
     const [total, setTotal] = useState(0)
     const [alternar, setAlternar] = useState(false);
     const comandaRef = useRef();
@@ -25,14 +25,14 @@ const VerPedido = ({ n_pedido, n_mesa }) => {
         })
     }
 
-    const confirmarPedido = async () => {
-        return apiRequest(`/api/pedidos/actualizar/${id}/RESUELTO`, {
+    const confirmarPedido = async (tipoPago) => {
+        return apiRequest(`/api/pedidos/actualizar/${id}/RESUELTO/${tipoPago}`, {
             metodo: "PUT"
         })
     }
 
     const anularPedido = async () => {
-        return apiRequest(`/api/pedidos/actualizar/${id}/CANCELADO`, {
+        return apiRequest(`/api/pedidos/actualizar/${id}/CANCELADO/NO_PAGO`, {
             metodo: "PUT"
         })
     }
@@ -42,8 +42,8 @@ const VerPedido = ({ n_pedido, n_mesa }) => {
         navigate("/pedidos");
     }
 
-    const resolverPedido = async () => {
-        const tmp = await confirmarPedido()
+    const resolverPedido = async (tipoPago) => {
+        const tmp = await confirmarPedido(tipoPago)
         navigate("/pedidos");
     }
     useEffect(() => {
@@ -73,7 +73,14 @@ const VerPedido = ({ n_pedido, n_mesa }) => {
                         <h3>Pedido {id}</h3>
                     </div>
                     <div className='fila-pedido-text-mesa'>
-                        <h3>Mesa N.{mesa}</h3>
+                        {domi!=undefined?(
+                            <h3>{domi}</h3>
+                        ):(
+                            <h3>Mesa N.{mesa}</h3>
+                        )
+                            
+                        }
+                        
                     </div>
                 </div>
                 <div className='fila-pedido-div-dos'>
@@ -155,9 +162,9 @@ const VerPedido = ({ n_pedido, n_mesa }) => {
                                     clearTimeout(timer.current)
                                 }}
                             >
-                                <div className='opcion-menu'>Pago transferencia</div>
-                                <div className='opcion-menu'>Pago en efectivo</div>
-                                <div className='opcion-menu'>Pago con tarjeta</div>
+                                <div className='opcion-menu' onClick={()=>resolverPedido("TRANSFERENCIA")}>Pago transferencia</div>
+                                <div className='opcion-menu' onClick={()=>resolverPedido("EFECTIVO")}>Pago en efectivo</div>
+                                <div className='opcion-menu' onClick={()=>resolverPedido("DATAFONO")}>Pago con tarjeta</div>
                             </div>
 
                         ) : (
