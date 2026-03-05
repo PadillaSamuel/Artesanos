@@ -64,22 +64,36 @@ public class PedidoController {
     @PreAuthorize("hasAnyAuthority('ROLE_CAJA', 'ROLE_MESERA')")
     public ResponseEntity<?> postPedido(@RequestBody PedidoDto pedidoDto, @PathVariable String nombreUsuario) {
         Optional<Pedido> pedido = pedidoService.save(pedidoDto, nombreUsuario);
+        PedidoDto response = null;
+        if (pedido.isPresent()) {
+            response = new PedidoDto();
+            response.setId(pedido.get().getId());
+        }
         if (pedido.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
                     "La mesa ya tiene un pedido pendiente, si requiere agregar productos actualice el pedido pendiente");
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(response);
     }
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Domicilio creado")
     })
-    @Operation(summary = "Crear pedidos")
+    @Operation(summary = "Crear pedido domicilio")
     @PostMapping("/crear/domicilio/{nombreUsuario}")
     @PreAuthorize("hasAnyAuthority('ROLE_CAJA', 'ROLE_MESERA')")
     public ResponseEntity<?> postPedidoDomicilio(@RequestBody PedidoDto pedidoDto, @PathVariable String nombreUsuario) {
-        pedidoService.save(pedidoDto, nombreUsuario);
-        return ResponseEntity.ok().build();
+        Optional<Pedido> pedido = pedidoService.save(pedidoDto, nombreUsuario);
+        PedidoDto response = null;
+        if (pedido.isPresent()) {
+            response = new PedidoDto();
+            response.setId(pedido.get().getId());
+        }
+        if (pedido.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    "No se pudo crear el domicilio");
+        }
+        return ResponseEntity.ok().body(response);
     }
 
     @ApiResponses(value = {
@@ -88,7 +102,7 @@ public class PedidoController {
     })
     @Operation(summary = "Actualizar pedido por id")
     @PutMapping("/actualizar/{id}")
-    @PreAuthorize("hasAuthority('ROLE_MESERA')")
+    @PreAuthorize("hasAnyAuthority('ROLE_CAJA', 'ROLE_MESERA')")
     public ResponseEntity<?> putPedido(@PathVariable Integer id, @RequestBody PedidoBodyDto pedidoDto) {
         if (pedidoService.actualizarPedido(id, pedidoDto).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe pedido con ese id");
