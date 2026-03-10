@@ -26,7 +26,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 @Service
-public class NetworkPrinterService {
+public class networkPrinterService {
 
     private final ResourceLoader resourceLoader;
 
@@ -38,7 +38,7 @@ public class NetworkPrinterService {
             .setJustification(EscPosConst.Justification.Center);
     private final Style normal = new Style().setFontSize(Style.FontSize._1, Style.FontSize._1);
 
-    public NetworkPrinterService(ResourceLoader resourceLoader) {
+    public networkPrinterService(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 

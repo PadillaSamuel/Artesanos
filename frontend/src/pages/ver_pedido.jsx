@@ -31,6 +31,12 @@ const VerPedido = ({ n_pedido, n_mesa }) => {
         })
     }
 
+    const listarResueltos = async () => {
+        return apiRequest('/api/pedidos/resueltos', {
+            metodo: 'GET'
+        })
+    }
+
     const confirmarPedido = async (tipoPago) => {
         return apiRequest(`/api/pedidos/actualizar/${id}/RESUELTO/${tipoPago}`, {
             metodo: "PUT"
@@ -67,12 +73,19 @@ const VerPedido = ({ n_pedido, n_mesa }) => {
 
     useEffect(() => {
         const cargarCel = async () => {
-            const pediList = await listarPedido()
-            const pedidoCel = pediList.find(p => p.id === Number(id))
-            console.log(pedidoCel)
-            if (pedidoCel.numeroCliente!=undefined) {
-                setCelular(pedidoCel.numeroCliente)
+            let pediList = null
+            if (estado != undefined) {
+                pediList = await listarResueltos()
+            } else {
+                pediList = await listarPedido()
             }
+            if (pediList != null) {
+                const pedidoCel = pediList.find(p => p.id === Number(id))
+                if (pedidoCel?.numeroCliente != undefined) {
+                    setCelular(pedidoCel.numeroCliente)
+                }
+            }
+
         }
         cargarCel()
     }, [])

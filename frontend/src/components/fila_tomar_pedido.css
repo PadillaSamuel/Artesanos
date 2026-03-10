@@ -1,7 +1,8 @@
 .fila-tomar-pedido-sec{
     display: grid;
     grid-template-columns: auto 2fr 30px 30px 1fr;
-    height: 40px;
+    height: auto;
+    min-height: 50px;
     justify-items: center;
     gap: 3px;
     text-align: center;
