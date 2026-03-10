@@ -69,7 +69,8 @@ const VerPedido = ({ n_pedido, n_mesa }) => {
         const cargarCel = async () => {
             const pediList = await listarPedido()
             const pedidoCel = pediList.find(p => p.id === Number(id))
-            if (pedidoCel.numeroCliente != undefined) {
+            console.log(pedidoCel)
+            if (pedidoCel.numeroCliente!=undefined) {
                 setCelular(pedidoCel.numeroCliente)
             }
         }
@@ -160,7 +161,7 @@ const VerPedido = ({ n_pedido, n_mesa }) => {
 
 
                             <div>
-                                <button className='fila-boton-dos' onClick={() => impresionFac}>Imprimir Comanda</button>
+                                <button className='fila-boton-dos' onClick={impresionFac}>Imprimir Comanda</button>
                             </div>
                         </>
 

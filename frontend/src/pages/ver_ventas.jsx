@@ -106,13 +106,23 @@ const VerVentas = () => {
           </div>
 
           <div className="pedidos-encontrados">
-            {pedidos.map((p) => (
-              <BotonPedido
+            {pedidos.map(p => (
+              p.numeroMesa!=0?(
+                <BotonPedido
                 key={p.id}
                 ruta={`/ver-pedido/${p.id}/${p.numeroMesa}/resuelto`}
                 num_mesa={p.numeroMesa}
                 num_pedido={p.id}
               />
+              ):(
+                <BotonPedido
+                key={p.id}
+                ruta={`/ver-pedido-domi/${p.id}/${p.nombreDomicilio}/resuelto`}
+                nombreDomi={p.nombreDomicilio}
+                num_pedido={p.id}
+              />
+              )
+              
             ))}
           </div>
 

@@ -24,6 +24,7 @@ function App() {
         <Route path="/gestion-productos" element={<GestionProductos />} />
         <Route path="/pedidos" element={<Pedidos />} />
         <Route path="/buscar-producto" element={<BuscarProducto />} />
+        <Route path="/ver-pedido/:id/:mesa/:estado" element={<VerPedido />} />
         <Route path="/ver-pedido/:id/:mesa" element={<VerPedido />} />
         <Route path="/tomar-pedido" element={<TomarPedido />} />
         <Route path="/tomar-pedido/:id/:mesa" element={<TomarPedido />} />
@@ -33,13 +34,14 @@ function App() {
           element={<CrearProducto />}
         />
         <Route path="/ver-ventas" element={<VerVentas />} />
-        <Route path="/ver-pedido/:id/:mesa/:estado" element={<VerPedido />} />
+        
         <Route path="/tomar-pedido/:domi" element={<TomarPedido />} />
         <Route path="/tomar-pedido/domi/:id/:domi" element={<TomarPedido />} />
         <Route path="/gestionar-domis" element={<GestionDomis />} />
-        <Route path="/tomar-pedido/domi/:id/:domi" element={<TomarPedido />} />
+        <Route path="/tomar-pedido/domi/:id/:domi" element={<TomarPedido />}  />
         <Route path="/ver-pedido/domi/:id/:domi" element={<VerPedido />} />
         <Route path="/pedidos/:domis" element={<Pedidos />} />
+        <Route path="/ver-pedido-domi/:id/:domi/:estado" element={<VerPedido />} />
       </Routes>
 
       <ToastContainer position="bottom-right" autoClose={2500} />
