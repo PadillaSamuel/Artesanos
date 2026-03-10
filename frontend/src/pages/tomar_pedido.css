@@ -246,7 +246,8 @@ body {
         overflow-y: auto;
         align-self: self-start;
         grid-row: 2;
-        height: 90%;
+        height: auto;
+        max-height: 90%;
         scrollbar-width: none;
     }
 
