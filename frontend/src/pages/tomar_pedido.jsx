@@ -270,7 +270,7 @@ const TomarPedido = () => {
         const nameDomi = e.target.value;
         if (nameDomi === '.') {
             toast.error("Caracter inválido! Cambie el nombre del cliente ", { toastId: "error-nombre" });
-            return
+            
         }
         setNombreDomicilio(nameDomi);
 
@@ -437,13 +437,28 @@ const TomarPedido = () => {
                     <div className='div-confirmar-pedido'>
 
                         {id != undefined ? (
-                            <>
-                                <button className='button-confirmar-pedido' disabled={pedido.length === 0 || mesaPedido == 0 || mesaPedido == undefined || mesaPediod == null} onClick={subirPedido}>Confirmar pedido</button>
+                            mesaPedido!=undefined?
+                            (
+<>
+                                <button className='button-confirmar-pedido' disabled={pedido.length === 0 || mesaPedido == 0 || mesaPedido == undefined || mesaPedido == null} onClick={subirPedido}>Confirmar pedido</button>
                                 <button className='button-anular-pedido' onClick={cancelarPedido}>Anular pedido</button>
                             </>
+                            ):(
+                                <>
+                                <button className='button-confirmar-pedido' disabled={pedido.length === 0 || nombreDomicilio == '' ||nombreDomicilio=='.'} onClick={subirPedido}>Confirmar pedido</button>
+                                <button className='button-anular-pedido' onClick={cancelarPedido}>Anular pedido</button>
+                            </>
+                            )
+                            
 
                         ) : (
-                            <button className='button-confirmar-pedido' disabled={pedido.length === 0 || mesaPedido == 0 || mesaPedido == undefined || mesaPedido == null} onClick={subirPedido}>Confirmar pedido</button>
+                            domi!=undefined?
+                            (
+                                <button className='button-confirmar-pedido' disabled={pedido.length === 0 || nombreDomicilio=='' || nombreDomicilio=='.'} onClick={subirPedido}>Confirmar pedido</button>
+                            ):(
+                                <button className='button-confirmar-pedido' disabled={pedido.length === 0 || mesaPedido == 0 || mesaPedido == undefined || mesaPedido == null} onClick={subirPedido}>Confirmar pedido</button>
+                            )
+                            
                         )
 
                         }
