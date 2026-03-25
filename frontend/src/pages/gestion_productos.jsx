@@ -18,6 +18,8 @@ const GestionProductos = () => {
                 <div className='boton-numero-dos-gestion'>
                     <Boton imagen={lupa} className={"boton"} nombre="Buscar producto" ruta="/buscar-producto"/>    
                 </div>
+
+                <button className='boton-anulados' onClick={()=>{navigate('/ver-anulados')}}>Anulados</button>
                 
             </section>
         </>
