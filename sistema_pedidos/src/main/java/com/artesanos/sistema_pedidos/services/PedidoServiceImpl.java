@@ -193,6 +193,10 @@ public Optional<Pedido> actualizarPedido(Integer id, PedidoBodyDto pedidoBodyDto
     public List<PedidoDto> findByFechaPedidoBetweenAndEstadoPedido(LocalDateTime inicio, LocalDateTime fin) {
         return pedidoRepository.findByFechaPedidoBetweenAndEstadoPedido(inicio, fin, EstadoPedido.RESUELTO);
     }
+    @Override
+    public List<PedidoDto> findByFechaPedidoBetweenAndEstadoPedidoAnulado(LocalDateTime inicio, LocalDateTime fin) {
+        return pedidoRepository.findByFechaPedidoBetweenAndEstadoPedido(inicio, fin, EstadoPedido.CANCELADO);
+    }
 
     @Override
     public List<PedidoDto> findEstadoPedidoResuelto() {

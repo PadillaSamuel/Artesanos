@@ -1,6 +1,5 @@
 package com.artesanos.sistema_pedidos.dtos;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.Getter;
