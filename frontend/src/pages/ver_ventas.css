@@ -55,10 +55,11 @@
 
 .footer-ver-ventas{
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr ;
+    grid-template-rows: 1fr ;
     width: 100%;
     place-items: center;
+    margin-bottom: 20px;
 }
 
 .boton-buscar{
@@ -83,9 +84,10 @@
 }
 
 .total-cierre{
-    grid-column: 2;
-    margin-right: 50px;
-    justify-self: left;
+    display: flex;
+    justify-items: center;
+    gap: 20px;
+    align-items: center;
 }
 
 .pedidos-encontrados{
@@ -105,4 +107,8 @@ form{
     border: none;
     background-color: #D4D2D2;
     padding: 3px;
+}
+
+.total-caja{
+    font-size: 18px;
 }

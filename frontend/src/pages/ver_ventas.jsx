@@ -143,9 +143,11 @@ const VerVentas = () => {
             <button type="submit" className="boton-buscar">
               Buscar
             </button>
-            <h2 className="total-caja">EFECTIVO {formateador.format(totalesPorMetodo.EFECTIVO)}</h2>
-            <h2 className="total-caja">TRANSFERENCIA {formateador.format(totalesPorMetodo.TRANSFERENCIA)}</h2>
-            <h2 className="total-caja">DATAFONO {formateador.format(totalesPorMetodo.DATAFONO)}</h2>
+            <div className="total-cierre">
+              <h2 className="total-caja">Efec. {formateador.format(totalesPorMetodo.EFECTIVO)}</h2>
+              <h2 className="total-caja">Transf. {formateador.format(totalesPorMetodo.TRANSFERENCIA)}</h2>
+              <h2 className="total-caja">Dataf. {formateador.format(totalesPorMetodo.DATAFONO)}</h2>
+            </div>
           </div>
         </form>
       </section>
